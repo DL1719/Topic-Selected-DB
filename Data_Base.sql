@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `corrupcion`.`Periodico` (
   `MunicipioPeriodico` VARCHAR(45) NOT NULL,
   `EstadoPeriodico` VARCHAR(45) NOT NULL,
   `PaisPeriodico` VARCHAR(45) NOT NULL,
-  `Tiraje` INT(9) NULL,
+  `Tiraje` INT(9) NOT NULL,
   PRIMARY KEY (`NombrePeriodico`))
 ENGINE = InnoDB;
 
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `corrupcion`.`Ciudadano` (
   `idCiudadano` VARCHAR(20) NOT NULL,
   `Nombre` VARCHAR(45) NOT NULL,
   `ApellidoPaterno` VARCHAR(45) NOT NULL,
-  `ApellidoMaterno` VARCHAR(45) NULL,
+  `ApellidoMaterno` VARCHAR(45) NOT NULL,
   `FechaNacimiento` DATE NOT NULL,
   `Calle` VARCHAR(45) NOT NULL,
   `Numero` VARCHAR(5) NOT NULL,
@@ -131,7 +131,7 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `corrupcion`.`PartidoCiudadano` (
   `NombrePartido` VARCHAR(45) NOT NULL,
   `idCiudadano` VARCHAR(20) NOT NULL,
-  `Puesto` VARCHAR(45) NULL,
+  `Puesto` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`NombrePartido`, `idCiudadano`),
   INDEX `fk_ciudadnopar_idx` (`idCiudadano` ASC),
   CONSTRAINT `fk_partidociu`
