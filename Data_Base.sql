@@ -626,4 +626,21 @@ where NombrePartido IN (SELECT NOMBREPASADO FROM PARTIDO
 select * from partido
 where NombrePartido ='XYZ';
 
+-- Consulta 6
+SELECT IDperiodico, COUNT(IDPERIODICO) contador FROM CASO 
+GROUP BY IDPERIODICO
+ORDER BY contador DESC;
+
+
+SELECT MAX(contador) FROM (SELECT IDperiodico, COUNT(IDPERIODICO) contador FROM CASO 
+						   GROUP BY IDPERIODICO) T;                         
+
+
+
+
+
+
+
+
+
 
