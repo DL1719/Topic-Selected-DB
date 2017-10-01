@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `corrupcion`.`Ciudadano` (
   `Municipio` VARCHAR(45) NOT NULL,
   `Estado` VARCHAR(45) NOT NULL,
   `Pais` VARCHAR(45) NOT NULL,
-  `Patrimonio` DECIMAL(12,2) NULL,
+  `Patrimonio` DECIMAL(12,2) NOT NULL,
   PRIMARY KEY (`idCiudadano`))
 ENGINE = InnoDB;
 
