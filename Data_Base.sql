@@ -579,6 +579,79 @@ VALUES ('41324', '52880406', 'Acoso');
 INSERT INTO CASOCIUDADANO
 VALUES ('41324', '52960227', 'Acoso');
 
+INSERT INTO CASOJUEZ 
+VALUES (19001, 79998342);
+INSERT INTO CASOJUEZ 
+VALUES (11021,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (12221,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (15631,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (17051,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (18001,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19001,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19003,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19009,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19010,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19022,39625110);
+INSERT INTO CASOJUEZ 
+VALUES (19049,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19099,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19305,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19500,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19502,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19503,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19504,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19505,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19506,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19507,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19508,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19509,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19510,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19511,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (19512,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (23001,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (29001,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (41324,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (456487,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (456786,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (46768,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (5468,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (84613,79998342);
+INSERT INTO CASOJUEZ 
+VALUES (99001,79998342);
+
+
+
 SELECT COUNT(*) FROM CASO;
 SELECT COUNT(*) FROM CASOCIUDADANO;
 SELECT COUNT(*) FROM CASOJUEZ;
@@ -613,10 +686,47 @@ RIGHT JOIN CASO ON CASO.IDPERIODICO = PERIODICO.NOMBREPERIODICO
 ORDER BY PERIODICO.NOMBREPERIODICO;
 
 -- Consulta 3
-select CIUDADANO.Nombre from ciudadano
-WHERE idCiudadano NOT IN (SELECT CIUDADANO.Nombre FROM CIUDADANO
-						  RIGHT JOIN CASOCIUDADANO ON CASOCIUDADANO.idCiudadano = CIUDADANO.idCiudadano
-                          ORDER BY CIUDADANO.idCiudadano);
+select CIUDADANO.Nombre, CIUDADANO.IDCIUDADANO from ciudadano
+WHERE idCiudadano NOT IN (SELECT CIUDADANO.idCiudadano FROM CIUDADANO
+						  RIGHT JOIN CASOCIUDADANO ON CASOCIUDADANO.idCiudadano = CIUDADANO.idCiudadano);
+
+
+-- Consulta 4
+
+	-- Numero total de casos
+    SELECT COUNT(*) AS totalcasos FROM CASO AS casos;
+	
+    -- Numero de casos de cada juez
+    SELECT COUNT(IDJUEZ) AS totaljuez FROM CASOJUEZ AS casosjueces
+	GROUP BY IDJUEZ;
+    
+    
+SELECT mayor.idJuez, ciudadano.nombre 
+		FROM CIUDADANO, (SELECT CASOSJUECES.*, CASOS.TOTALCASOS 
+						FROM (SELECT COUNT(*) AS TOTALCASOS 
+                        FROM CASO) 
+                        AS CASOS,	(SELECT CASOJUEZ.idJuez, COUNT(*) AS TOTALJUEZ
+											FROM CASOJUEZ
+											GROUP BY CASOJUEZ.IDJUEZ ) AS CASOSJUECES) 
+                                            AS mayor
+                                            WHERE mayor.TOTALCASOS = mayor.totaljuez AND CIUDADANO.idCiudadano = mayor.idJuez;
+    
+    
+    
+    
+    Select casoasi.idJuez, concat(ciudadano.nombre,' ',ciudadano.ApellidoPaterno,' ',ciudadano.ApellidoMaterno) AS nombreCompleto 
+FROM ciudadano,(	select asigna.*, casos.contador 
+					FROM (	select count(*) as contador 
+							from caso
+						  ) 
+					as casos,  (	select casoJuez.idJuez, count(*) as asignados 
+									from casoJuez 
+                                    GROUP BY casoJuez.idJuez
+								) 
+					AS asigna 
+				) 
+				AS casoasi 
+				WHERe casoasi.asignados=casoasi.contador AND ciudadano.idCiudadano=casoasi.idJuez;
 
 -- Consulta 5
 select NombrePartido, CallePartido, NumeroPartido, ColoniaPartido, MunicipioPartido, EstadoPartido, PaisPartido from partido
@@ -627,15 +737,23 @@ select * from partido
 where NombrePartido ='XYZ';
 
 -- Consulta 6
-SELECT IDperiodico, COUNT(IDPERIODICO) contador FROM CASO 
-GROUP BY IDPERIODICO
-ORDER BY contador DESC;
+
+SELECT COUNT(*) FROM CASO;   
 
 
-SELECT MAX(contador) FROM (SELECT IDperiodico, COUNT(IDPERIODICO) contador FROM CASO 
-						   GROUP BY IDPERIODICO) T;                         
+SELECT cuenta.NombrePeriodico,cuenta.CallePeriodico,cuenta.NumeroPeriodico,cuenta.MUNICIPIOPERIODICO,cuenta.ESTADOPERIODICO,cuenta.PAISPERIODICO,cuenta.Tiraje FROM
+		 (select periodico.*, count(*) AS contador from 
+		 	caso inner join periodico on caso.idPeriodico=periodico.NombrePeriodico 
+		 	GROUP BY periodico.NombrePeriodico 
+		 	order by contador desc) AS cuenta
+            having MAX(contador);                   
 
 
+SELECT cuenta.* FROM (select periodico.*, count(*) AS CasosDescubiertos 
+from caso inner join periodico 
+on caso.idPeriodico=periodico.NombrePeriodico 
+GROUP BY periodico.NombrePeriodico order by CasosDescubiertos desc) AS cuenta
+having MAX(CasosDescubiertos);
 
 
 
