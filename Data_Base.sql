@@ -665,6 +665,7 @@ SELECT COUNT(*) FROM PERIODICO;
 USE CORRUPCION;
 
 SELECT * FROM PARTIDO;
+SELECT COUNT(*) FROM CASOJUEZ;
 
 
 -- Consulta 1
@@ -753,8 +754,13 @@ SELECT cuenta.* FROM (select periodico.*, count(*) AS CasosDescubiertos
 from caso inner join periodico 
 on caso.idPeriodico=periodico.NombrePeriodico 
 GROUP BY periodico.NombrePeriodico order by CasosDescubiertos desc) AS cuenta
-having MAX(CasosDescubiertos);
+-- having MAX(CasosDescubiertos);
 
+
+
+SELECT IDPERIODICO, COUNT(IDPERIODICO) AS contador FROM CASO
+GROUP BY IDPERIODICO
+ORDER BY contador DESC;
 
 
 
